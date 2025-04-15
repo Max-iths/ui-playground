@@ -16,15 +16,19 @@
                 </ol>
             </div>
             <div class="button-container">
-                <button @click="checkAnswers">Check Answers</button>
+                <button
+                @click="checkAnswers"
+                class="btn"
+                v-if="!showRetry && !loading"
+                >
+                Check Answers
+                </button>
+                <p class="message">{{ message }}</p>
+                <button @click="retry" class="btn" v-if="showRetry">
+                    Retry
+                </button>
             </div>
         </div>
-        <p class="message">{{ message }}</p>
-
-        <div v-if="showRetry">
-            <button @click="retry">Retry</button>
-        </div>
-
     </div>
 </template>
 
@@ -43,6 +47,7 @@ const currentWords = ref(wordsLevel1)
 const scrambledWords = ref([])
 const message = ref('')
 const showRetry = ref(false)
+const loading = ref(false)
 
 //Function for shuffling words and not matching to the words
 function scrambleWord(word) {
@@ -70,9 +75,11 @@ function checkAnswers() {
 
     if (correctGuesses.every(isCorrect => isCorrect)) {
         message.value = `Congrats, Level ${ currentLevel.value } passed`
+        loading.value = true
         setTimeout(nextLevel, 1000)
     } else {
         message.value = `Level ${ currentLevel.value } failed, try again.`
+        showRetry.value = true
     }
 }
 
@@ -87,10 +94,15 @@ function nextLevel() {
         currentWords.value = wordsLevel3
     } else {
         message.value = 'Congrats! You completed all levels!'
+        showRetry.value = true
+        return
     }
 
     guesses.value = ['', '', '', '']
     showRetry.value = false
+
+    loading.value = false
+
 }
 
 function retry() {
@@ -99,6 +111,7 @@ function retry() {
     guesses.value = ['', '', '', '']
     message.value = ''
     showRetry.value = false
+    loading.value = false
 }
 
 </script>
@@ -113,7 +126,7 @@ function retry() {
 
     .game-container {
         text-align: center;
-        margin-bottom: 15px;
+        margin-top: 0;
     }
 
     .word-list {
@@ -122,7 +135,7 @@ function retry() {
     }
 
     .word-display {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
 
     .word-item {
@@ -133,7 +146,7 @@ function retry() {
     }
 
     .word {
-        font-size: 1.5rem;
+        font-size: 18px;
         display: flex;
         flex-direction: column;
         align-content: start;
@@ -146,34 +159,59 @@ function retry() {
 
     .input-display input {
         width: 60%;
-        padding: 10px;
-        font-size: 1rem;
+        padding: 5px;
+        font-size: 18px;
         border: 1px solid black;
         border-radius: 5px;
     }
 
     .message {
         text-align: center;
-        font-size: 1rem;
+        font-size: 18px;
     }
 
     #gameTitle {
-        width: 100%;
-        margin-left: 15px;
-        margin-top: 15px;
+        margin-left: 7px;
+        margin-top: 7px;
         position: relative;
     }
 
-    button {
+  .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .btn {
         padding: 10px;
         background-color: black;
         border-radius: 10px;
         color: white;
+        border: none;
+        transition:
+            background-color 0.3s ease,
+            transform 0.1s ease,
+            box-shadow 0.1s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
 
+    .btn:hover:enabled {
+        background-color: #333;
+        transform: translateY(2px);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:disabled {
+        background-color: #666;
+        color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 
     .levelHeader {
-        font-size: 22px;
+        font-size: 20px;
     }
 
 </style>

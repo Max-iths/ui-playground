@@ -32,6 +32,7 @@ export default {
 </script>
 
 <style scoped>
+
 .Navbar {
     background-color: #90dfff;
     width: 100%;
@@ -73,9 +74,9 @@ export default {
     display: flex;
     list-style: none;
     align-items: center;
-    padding: 10px;
+    padding: 15px;
     justify-content: center;
-    margin: 10px 5px;
+    margin: 10px 15px;
     gap: 10px;
     list-style: none;
     font-size: 18px;
